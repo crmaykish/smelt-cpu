@@ -1,0 +1,13 @@
+// branch_test.hex
+7001    // 0x00  JMP +1   -> 0x02   jump over the HALT below
+0800    // 0x01  HALT              final landing, reached later by the backward jump
+
+1000    // 0x02  LDI R0            R0 = AAAA
+AAAA    // 0x03    imm
+
+7002    // 0x04  JMP +2   -> 0x07   skip the trap below
+
+1000    // 0x05  LDI R0            TRAP: must be skipped
+DEAD    // 0x06    imm            (R0 = DEAD here means a forward jump failed)
+
+70F9    // 0x07  JMP -7   -> 0x01   backward jump to HALT (exercises sign extension)

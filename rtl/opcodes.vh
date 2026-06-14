@@ -11,3 +11,6 @@ localparam XOR  = 16'h0A;
 localparam SHL  = 16'h0B;
 localparam SHR  = 16'h0C;
 localparam CMP  = 16'h0D;
+localparam JMP  = 16'h0E;
+localparam BEQ  = 16'h0F;
+localparam BNE  = 16'h10;

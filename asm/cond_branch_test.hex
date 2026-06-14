@@ -1,0 +1,41 @@
+// cond_branch_test.hex
+// --- setup: R1 = 1111, R2 = 2222 ---
+1100    // 0x00  LDI R1
+1111    // 0x01    imm
+1200    // 0x02  LDI R2
+2222    // 0x03    imm
+
+// --- Test 1: BEQ taken (Z=1) -> must SKIP the trap ---
+6920    // 0x04  CMP R1,R1      Z=1
+7803    // 0x05  BEQ +3 ->0x09  (taken: jump over trap)
+1000    // 0x06  LDI R0         TRAP
+00E1    // 0x07    imm
+0800    // 0x08  HALT
+
+// --- Test 2: BEQ not-taken (Z=0) -> must FALL THROUGH ---
+6940    // 0x09  CMP R1,R2      Z=0
+7801    // 0x0A  BEQ +1 ->0x0C  (if wrongly taken: hits trap)
+7003    // 0x0B  JMP +3 ->0x0F  (correct fall-through: skip trap)
+1000    // 0x0C  LDI R0         TRAP
+00E2    // 0x0D    imm
+0800    // 0x0E  HALT
+
+// --- Test 3: BNE taken (Z=0) -> must SKIP the trap ---
+6940    // 0x0F  CMP R1,R2      Z=0
+8003    // 0x10  BNE +3 ->0x14  (taken: jump over trap)
+1000    // 0x11  LDI R0         TRAP
+00E3    // 0x12    imm
+0800    // 0x13  HALT
+
+// --- Test 4: BNE not-taken (Z=1) -> must FALL THROUGH ---
+6920    // 0x14  CMP R1,R1      Z=1
+8001    // 0x15  BNE +1 ->0x17  (if wrongly taken: hits trap)
+7003    // 0x16  JMP +3 ->0x1A  (correct fall-through: skip trap)
+1000    // 0x17  LDI R0         TRAP
+00E4    // 0x18    imm
+0800    // 0x19  HALT
+
+// --- epilogue: all four passed ---
+1000    // 0x1A  LDI R0
+600D    // 0x1B    imm
+0800    // 0x1C  HALT

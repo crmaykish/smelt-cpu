@@ -75,6 +75,19 @@ module smelt_cpu (
                             addr <= pc + 1'b1;
                             state <= MEM;
                         end
+                        JMP: begin
+                            // Sign extend the offset to 16 bits
+                            pc <= (pc + 1'b1) + {{8{rdata[7]}}, rdata[7:0]};
+                            state <= FETCH;
+                        end
+                        BEQ: begin
+                            if (flag_zero) pc <= (pc + 1'b1) + {{8{rdata[7]}}, rdata[7:0]};
+                            state <= FETCH;
+                        end
+                        BNE: begin
+                            if (~flag_zero) pc <= (pc + 1'b1) + {{8{rdata[7]}}, rdata[7:0]};
+                            state <= FETCH;
+                        end
                     endcase
                 end
                 EXEC: begin
