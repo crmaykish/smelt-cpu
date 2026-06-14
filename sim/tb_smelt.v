@@ -160,8 +160,9 @@ module tb_smelt;
 
     // Safety timeout
     initial begin
-        #100000 $finish;
+        #100000;
         $display("Timed out!");
+        $finish;
     end
 
 endmodule

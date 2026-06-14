@@ -11,13 +11,14 @@ module smelt_alu (
 
 `include "opcodes.vh"
 
-reg [16:0] buffer = 17'b0;
+reg [16:0] buffer;      // combinational; defaulted in the always block below
 
 assign result = buffer[15:0];
 assign zero = (result == 16'b0);
 assign carry = buffer[16];
 
 always @(*) begin
+    buffer = 17'b0;
     case(op)
         ADD: begin
             buffer = a + b;

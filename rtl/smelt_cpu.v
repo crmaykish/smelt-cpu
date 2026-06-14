@@ -18,7 +18,7 @@ module smelt_cpu (
     localparam FETCH    = 2'b00;
     localparam DECODE   = 2'b01;
     localparam EXEC     = 2'b10;
-    localparam MEM      = 2'b11;   // extra memory access for LDI
+    localparam MEM      = 2'b11;   // extra memory cycle for LD and LDI
 
     // CPU Cycle State
     reg [1:0] state = FETCH;
