@@ -44,6 +44,8 @@ There are three types of instructions: `R`egister, `I`mmediate, and `B`ranching.
 
 The flags column lists flags which are impacted by the instruction. Unlisted flags are not impacted.
 
+Smelt uses the no-borrow carry flag convention: `C=1` after `SUB` means no-borrow, i.e. `rd >= rs`.
+
 | Opcode | Mnemonic        | Type | Operation                         | Flags |
 |--------|-----------------|------|-----------------------------------|-------|
 | `0x00` | `NOP`           |      | do nothing                        |       |

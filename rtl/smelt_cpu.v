@@ -81,9 +81,21 @@ module smelt_cpu (
                     state <= FETCH;
 
                     case (ir[15:11])
+                        // Register copy
                         MOV: regs[ir[10:8]] <= regs[ir[7:5]];
-                        ADD: begin
+                        // ALU: result + Z + C
+                        ADD, SUB, SHL, SHR: begin
                             regs[ir[10:8]] <= alu_result;
+                            flag_zero <= alu_zero;
+                            flag_carry <= alu_carry;
+                        end
+                        // ALU: result + Z
+                        AND, OR, XOR: begin
+                            regs[ir[10:8]] <= alu_result;
+                            flag_zero <= alu_zero;
+                        end
+                        // ALU: Z + C only
+                        CMP: begin
                             flag_zero <= alu_zero;
                             flag_carry <= alu_carry;
                         end

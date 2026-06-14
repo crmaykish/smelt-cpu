@@ -1,0 +1,137 @@
+// alu_test.hex
+
+// ADD with no carry, no zero
+1000    // LDI R0 2222
+2222
+1100    // LDI R1 3333
+3333
+3020    // ADD R0 R1
+
+// ADD with zero
+1000    // LDI R0 0000
+0000
+3000    // ADD R0 R0
+
+// ADD with carry
+1000    // LDI R0 F000
+F000
+1100    // LDI R1 2000
+2000
+3020    // ADD R0 R1
+
+// SUB no-borrow
+1000    // LDI R0 3000
+3000
+1100    // LDI R1 1000
+1000
+3820    // SUB R0 R1
+
+// SUB borrow
+1000    // LDI R0 2000
+2000
+1100    // LDI R1 3000
+3000
+3820    // SUB R0 R1
+
+// SUB zero no-borrow
+1000    // LDI R0 1000
+1000
+3800    // SUB R0 R0
+
+// AND with nonzero result
+1000    // LDI R0 FF00
+FF00
+1100    // LDI R1 0FF0
+0FF0
+4020    // AND R0 R1
+
+// AND with zero result
+1000    // LDI R0 FF00
+FF00
+1100    // LDI R1 00FF
+00FF
+4020    // AND R0 R1
+
+// OR with nonzero result
+1000    // LDI R0 F000
+F000
+1100    // LDI R1 000F
+000F
+4820    // OR R0 R1
+
+// OR with zero result
+1000    // LDI R0 0000
+0000
+1100    // LDI R1 0000
+0000
+4820    // OR R0 R1
+
+// XOR with nonzero result
+1000    // LDI R0 FF00
+FF00
+1100    // LDI R1 0FF0
+0FF0
+5020    // XOR R0 R1
+
+// XOR with zero result
+1000    // LDI R0 ABCD
+ABCD
+5000    // XOR R0 R0
+
+// SHL no carry out
+1000    // LDI R0 1234
+1234
+5800    // SHL R0
+
+// SHL carry out, nonzero result
+1000    // LDI R0 C000
+C000
+5800    // SHL R0
+
+// SHL carry out, zero result
+1000    // LDI R0 8000
+8000
+5800    // SHL R0
+
+// SHR no carry out
+1000    // LDI R0 2468
+2468
+6000    // SHR R0
+
+// SHR carry out, nonzero result
+1000    // LDI R0 0003
+0003
+6000    // SHR R0
+
+// SHR carry out, zero result
+1000    // LDI R0 0001
+0001
+6000    // SHR R0
+
+// SHR logical fill
+1000    // LDI R0 8000
+8000
+6000    // SHR R0
+
+// CMP greater (rd > rs)
+1000    // LDI R0 5000
+5000
+1100    // LDI R1 2000
+2000
+6820    // CMP R0 R1
+
+// CMP less (rd < rs)
+1000    // LDI R0 2000
+2000
+1100    // LDI R1 5000
+5000
+6820    // CMP R0 R1
+
+// CMP equal (rd == rs)
+1000    // LDI R0 4000
+4000
+1100    // LDI R1 4000
+4000
+6820    // CMP R0 R1
+
+0800    // HALT
