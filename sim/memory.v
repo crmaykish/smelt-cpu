@@ -18,7 +18,7 @@ module memory
 
     // Load the test ROM code
     initial begin
-        $readmemh("asm/ldi_test.hex", mem);
+        $readmemh("asm/mov_test.hex", mem);
     end
 
     // Drive read-data from the current CPU address

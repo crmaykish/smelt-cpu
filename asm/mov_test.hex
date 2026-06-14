@@ -1,0 +1,7 @@
+// mov_test.hex
+0000    // NOP
+0000    // NOP
+1100    // LDI R1 ABCD
+ABCD
+1820    // MOV R1 R0
+0800    // HALT

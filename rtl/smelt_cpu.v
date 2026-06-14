@@ -15,6 +15,7 @@ module smelt_cpu (
     localparam NOP  = 16'h00;
     localparam HALT = 16'h01;
     localparam LDI  = 16'h02;
+    localparam MOV  = 16'h03;
 
     // FSM States
     localparam FETCH    = 2'b00;
@@ -65,6 +66,10 @@ module smelt_cpu (
                 end
                 EXEC: begin
                     state <= FETCH;
+
+                    case (ir[15:11])
+                        MOV: regs[ir[10:8]] <= regs[ir[7:5]];
+                    endcase
                 end
                 MEM: begin
                     // Read the data bus into the selected register
