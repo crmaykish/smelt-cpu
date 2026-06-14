@@ -11,11 +11,7 @@ module smelt_cpu (
     output reg halted           // CPU is halted
 );
 
-    // Opcode Definitions
-    localparam NOP  = 16'h00;
-    localparam HALT = 16'h01;
-    localparam LDI  = 16'h02;
-    localparam MOV  = 16'h03;
+    `include "opcodes.vh"
 
     // FSM States
     localparam FETCH    = 2'b00;
@@ -30,16 +26,33 @@ module smelt_cpu (
     reg [15:0] pc = 16'b0;  // Program counter register
     reg [15:0] ir = 16'b0;  // Instruction register
     reg [15:0] regs [0:7];  // Data registers (R0 - R7)
+    reg flag_zero;
+    reg flag_carry;
+
+    wire [15:0] alu_result;
+    wire alu_zero;
+    wire alu_carry;
+
+    smelt_alu alu(
+        .op(ir[15:11]),
+        .a(regs[ir[10:8]]),
+        .b(regs[ir[7:5]]),
+        .result(alu_result),
+        .zero(alu_zero),
+        .carry(alu_carry)
+    );
 
     always @(posedge clk or posedge rst) begin
         if (rst) begin
-            addr    <= 16'h0000;
-            wdata   <= 16'h0000;
-            we      <= 1'b0;
-            halted  <= 1'b0;
-            pc      <= 16'b0;
-            ir      <= 16'b0;
-            state   <= FETCH;
+            addr        <= 16'h0000;
+            wdata       <= 16'h0000;
+            we          <= 1'b0;
+            halted      <= 1'b0;
+            pc          <= 16'b0;
+            ir          <= 16'b0;
+            flag_zero   <= 1'b0;
+            flag_carry  <= 1'b0;
+            state       <= FETCH;
         end else begin
             // Main fetch-decode-execute loop
             case (state)
@@ -69,6 +82,11 @@ module smelt_cpu (
 
                     case (ir[15:11])
                         MOV: regs[ir[10:8]] <= regs[ir[7:5]];
+                        ADD: begin
+                            regs[ir[10:8]] <= alu_result;
+                            flag_zero <= alu_zero;
+                            flag_carry <= alu_carry;
+                        end
                     endcase
                 end
                 MEM: begin

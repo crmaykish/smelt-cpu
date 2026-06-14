@@ -6,7 +6,7 @@ IVERILOG ?= iverilog
 VVP ?= vvp
 GTKWAVE ?= gtkwave
 
-SRC = rtl/smelt_cpu.v sim/memory.v sim/tb_smelt.v
+SRC = rtl/smelt_cpu.v rtl/smelt_alu.v sim/memory.v sim/tb_smelt.v
 OUT = sim/smelt.vvp
 VCD = sim/smelt.vcd
 
@@ -16,7 +16,7 @@ sim: $(OUT)
 	$(VVP) $(OUT)
 
 $(OUT): $(SRC)
-	$(IVERILOG) -g2012 -Wall -o $(OUT) $(SRC)
+	$(IVERILOG) -g2012 -Wall -I rtl -o $(OUT) $(SRC)
 
 wave: sim
 	$(GTKWAVE) $(VCD) &

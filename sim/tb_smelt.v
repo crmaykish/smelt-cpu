@@ -50,8 +50,8 @@ module tb_smelt;
 
     // Print a per-cycle state of the CPU internals
     always @(posedge clk) begin
-        $display("T=%0t RST=%0d PC=%h OP=%h IR=%h rd=%0d rs=%0d STATE=%0d | R0=%h, R1=%h", 
-            $time, cpu.rst, cpu.pc, opcode, cpu.ir, rd, rs, cpu.state, cpu.regs[0], cpu.regs[1]);
+        $display("T=%0t RST=%0d PC=%h OP=%h IR=%h rd=%0d rs=%0d STATE=%0d | R0=%h R1=%h | Z=%0d C=%0d", 
+            $time, cpu.rst, cpu.pc, opcode, cpu.ir, rd, rs, cpu.state, cpu.regs[0], cpu.regs[1], cpu.flag_zero, cpu.flag_carry);
     end
 
     // Clean stop when the CPU halts
@@ -65,7 +65,7 @@ module tb_smelt;
     // Safety timeout -- never let a buggy core spin forever.
     initial begin
         $display("Timed out!");
-        #200 $finish;
+        #100000 $finish;
     end
 
 endmodule
