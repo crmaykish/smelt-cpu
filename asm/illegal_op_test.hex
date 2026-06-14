@@ -1,6 +1,0 @@
-// illegal_op_test.hex
-0000    // NOP
-0000    // NOP
-F800    // Illegal opcode "1F"
-// Expect ERROR here, not HALT
-0800    // HALT

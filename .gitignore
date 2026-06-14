@@ -1,2 +1,6 @@
+# Verilog output
 *.vcd
 *.vvp
+
+# Build files
+*.hex

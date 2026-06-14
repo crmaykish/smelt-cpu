@@ -1,4 +1,0 @@
-// nops.hex
-0000   // NOP
-0000   // NOP
-0800   // HALT

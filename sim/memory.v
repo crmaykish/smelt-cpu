@@ -16,9 +16,15 @@ module memory
     // Memory array
     reg [15:0] mem [0:DEPTH-1];
 
-    // Load the test ROM code
+    // Load the test ROM code. The hex file is required, selected at run time:
+    //   vvp sim/smelt.vvp +hex=asm/nop_test.hex
+    reg [1023:0] hexfile;
     initial begin
-        $readmemh("asm/illegal_op_test.hex", mem);
+        if (!$value$plusargs("hex=%s", hexfile)) begin
+            $display("ERROR: no program given -- pass +hex=<file> (e.g. make sim HEX=...)");
+            $finish;
+        end
+        $readmemh(hexfile, mem);
     end
 
     // Drive read-data from the current CPU address
