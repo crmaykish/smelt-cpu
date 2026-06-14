@@ -16,3 +16,5 @@ localparam CMP  = 16'h0D;
 localparam JMP  = 16'h0E;
 localparam BEQ  = 16'h0F;
 localparam BNE  = 16'h10;
+localparam JSR  = 16'h11;
+localparam RTS  = 16'h12;

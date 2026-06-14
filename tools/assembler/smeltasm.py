@@ -30,6 +30,8 @@ ISA = {
     "jmp":  (0x0E, "rel"),
     "beq":  (0x0F, "rel"),
     "bne":  (0x10, "rel"),
+    "jsr":  (0x11, "rel"),   # PC-relative call; saves return addr in r7 (link)
+    "rts":  (0x12, "none"),  # return: jump to r7
 }
 
 # Words emitted per instruction, by format. ldi is the only 2-word op; the

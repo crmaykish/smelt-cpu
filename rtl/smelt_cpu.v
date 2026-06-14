@@ -106,6 +106,15 @@ module smelt_cpu (
                             if (~flag_zero) pc <= (pc + 1'b1) + {{8{rdata[7]}}, rdata[7:0]};
                             state <= FETCH;
                         end
+                        JSR: begin
+                            regs[7] <= pc + 1'b1;
+                            pc <= (pc + 1'b1) + {{8{rdata[7]}}, rdata[7:0]};
+                            state <= FETCH;
+                        end
+                        RTS: begin
+                            pc <= regs[7];
+                            state <= FETCH;
+                        end
                     endcase
                 end
                 EXEC: begin

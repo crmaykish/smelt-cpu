@@ -2,7 +2,7 @@
 
 A programmer's reference for writing Smelt assembly (`.s`) for `smeltasm`, the
 two-pass assembler. This covers **syntax** - how to write source. For what each
-instruction *does* (flags, carry convention, memory map), see [`ISA.md`](../../ISA.md).
+instruction *does* (flags, carry convention, memory map), see [`ISA.md`](ISA.md).
 
 ```sh
 smeltasm.py prog.s -o prog.hex     # assemble to a $readmemh-loadable .hex
@@ -86,7 +86,7 @@ A register in **square brackets** means "the address held in that register":
 ## Instructions
 
 Grouped by operand shape. (Semantics - which flags each sets, the no-borrow
-carry convention - are in [`ISA.md`](../../ISA.md).)
+carry convention - are in [`ISA.md`](ISA.md).)
 
 ### No operands
 
@@ -163,6 +163,22 @@ a target within **−128 … +127 words** of the instruction after it. Out-of-ra
 targets are a hard error (the assembler will not silently truncate). For longer
 hops, branch to a nearby `jmp`, or restructure.
 
+### `jsr` / `rts` - subroutines
+
+`jsr` takes a **label** and is PC-relative (same ±127-word reach and rules as the
+branches). It saves the return address into the link register **`r7`** and jumps;
+`rts` takes no operand and returns by jumping to `r7`.
+
+```asm
+        jsr  delay          ; call: r7 = return address, then jump to `delay`
+        ; ...
+        rts                 ; return: jump to r7
+```
+
+`r7` is the link register, so don't keep data in it across a call. Calls are
+**single-level**: a subroutine that itself calls another must save and restore
+`r7` first (e.g. with `st`/`ld`) before nesting.
+
 ---
 
 ## Directives
@@ -214,6 +230,8 @@ loop:   st   [r6], r0           ; submit current value
 | `ld rd, [rs]`       | `ld r0, [r1]`      | load                          |
 | `st [rd], rs`       | `st [r6], r0`      | store (`0xFFFF` = output port)|
 | `jmp/beq/bne label` | `bne loop`         | offset ∈ [−128, 127] words    |
+| `jsr label`         | `jsr delay`        | call; saves return in `r7`    |
+| `rts`               | `rts`              | return (jump to `r7`)         |
 | `.word EXPR`        | `.word 0xF800`     | raw 16-bit value              |
 | immediate           | `#0x1F` `#42` `#-5`| hex / decimal / negative      |
 | register            | `r0` … `r7`        | case-insensitive              |

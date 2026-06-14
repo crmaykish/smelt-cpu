@@ -65,12 +65,16 @@ Smelt uses the no-borrow carry flag convention: `C=1` after `SUB` means no-borro
 | `0x0E` | `JMP rel`       |  B   | `PC ← PC + offset`                |       |
 | `0x0F` | `BEQ rel`       |  B   | if `Z=1`: `PC ← PC + offset`      |       |
 | `0x10` | `BNE rel`       |  B   | if `Z=0`: `PC ← PC + offset`      |       |
+| `0x11` | `JSR rel`       |  B   | `R7 ← PC; PC ← PC + offset` (call) |      |
+| `0x12` | `RTS`           |      | `PC ← R7` (return)                |       |
 
-## 4. Branch Semantics
+## 4. Branch & Subroutine Semantics
 
-Branches are PC-relative. The reference point is the already-incremented `PC`, i.e. the address of the instruction that follows the branch word.
+Branches (and `JSR`) are PC-relative. The reference point is the already-incremented `PC`, i.e. the address of the instruction that follows the branch word.
 
 `offset` is a signed 8-bit count of words (range -128…+127). Counting is in words.
+
+**Subroutines.** `R7` is the **link register**. `JSR rel` saves the return address - the already-incremented `PC`, i.e. the instruction after the `JSR` - into `R7`, then jumps PC-relative just like a branch. `RTS` returns by loading `PC` from `R7`. Calls do **not** nest automatically: a subroutine that calls another must first save and restore `R7` (e.g. to memory).
 
 ## 5. Program Format
 
