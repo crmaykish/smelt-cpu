@@ -18,10 +18,17 @@ module memory
 
     // Load the test ROM code
     initial begin
-        $readmemh("asm/cond_branch_test.hex", mem);
+        $readmemh("asm/mem_test.hex", mem);
     end
 
     // Drive read-data from the current CPU address
     assign rdata = mem[addr];
+
+    always @(posedge clk) begin
+        if (we) begin
+            if (addr == OUT_PORT) $display("OUT: %h", wdata);
+            else mem[addr] <= wdata;
+        end
+    end
 
 endmodule

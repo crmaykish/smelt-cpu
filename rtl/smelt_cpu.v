@@ -59,6 +59,7 @@ module smelt_cpu (
                 FETCH: begin
                     // TODO: could this address read be combinational?
                     addr <= pc;
+                    we <= 1'b0;
                     state <= DECODE;
                 end
                 DECODE: begin
@@ -70,6 +71,17 @@ module smelt_cpu (
                     // Opcode decoding (decode on rdata since ir is still a cycle behind)
                     case (rdata[15:11])
                         HALT: halted <= 1'b1;
+                        LD: begin
+                            // mem[rs] means rdata is the memory value next cycle
+                            addr <= regs[rdata[7:5]];
+                            state <= MEM;
+                        end
+                        ST: begin
+                            addr <= regs[rdata[10:8]];
+                            wdata <= regs[rdata[7:5]];
+                            we <= 1'b1;
+                            state <= FETCH;
+                        end
                         LDI: begin
                             // Set address to the next word after the current PC for the rdata read in the MEM state
                             addr <= pc + 1'b1;
@@ -117,8 +129,8 @@ module smelt_cpu (
                 MEM: begin
                     // Read the data bus into the selected register
                     regs[ir[10:8]] <= rdata;
-                    // Skip the data word by incrementing the PC again
-                    pc <= pc + 1'b1;
+                    // Skip the data word by incrementing the PC again (LDI only)
+                    if (ir[15:11] == LDI) pc <= pc + 1'b1;
                     state <= FETCH;
                 end
                 default: state <= FETCH;
