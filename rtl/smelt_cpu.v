@@ -8,7 +8,8 @@ module smelt_cpu (
     output reg [15:0] addr,     // External address bus
     output reg [15:0] wdata,    // Data to write
     output reg we,              // Write-enable
-    output reg halted           // CPU is halted
+    output reg halted,          // CPU is halted
+    output reg error            // CPU encountered an error
 );
 
     `include "opcodes.vh"
@@ -48,6 +49,7 @@ module smelt_cpu (
             wdata       <= 16'h0000;
             we          <= 1'b0;
             halted      <= 1'b0;
+            error       <= 1'b0;
             pc          <= 16'b0;
             ir          <= 16'b0;
             flag_zero   <= 1'b0;
@@ -123,6 +125,12 @@ module smelt_cpu (
                         CMP: begin
                             flag_zero <= alu_zero;
                             flag_carry <= alu_carry;
+                        end
+                        NOP, HALT: ;
+                        default: begin
+                            // Illegal opcode
+                            error <= 1'b1;
+                            halted <= 1'b1; 
                         end
                     endcase
                 end
