@@ -10,24 +10,32 @@ module tb_smelt;
     wire        we;
     wire [15:0] rdata;
     wire        halted;
+    wire        error;
 
     // Smelt CPU DUT
     smelt_cpu cpu (
-        .clk(clk), .rst(rst),
-        .addr(addr), .wdata(wdata), .we(we),
-        .rdata(rdata), .halted(halted)
+        .clk(clk),
+        .rst(rst),
+        .addr(addr),
+        .wdata(wdata),
+        .we(we),
+        .rdata(rdata),
+        .halted(halted),
+        .error(error)
     );
 
     // Simulated memory
     memory mem (
-        .clk(clk), .addr(addr), .wdata(wdata), .we(we),
+        .clk(clk),
+        .addr(addr),
+        .wdata(wdata),
+        .we(we),
         .rdata(rdata)
     );
 
     // Toggle the CPU clock (10ns period)
     initial begin
         clk = 1'b0;
-        
         forever #5 clk = ~clk;
     end
 
@@ -54,18 +62,22 @@ module tb_smelt;
             $time, cpu.rst, cpu.pc, opcode, cpu.ir, rd, rs, cpu.state, cpu.regs[0], cpu.regs[1], cpu.flag_zero, cpu.flag_carry);
     end
 
-    // Clean stop when the CPU halts
+    // Clean stop when the CPU stops
     always @(posedge clk) begin
-        if (halted) begin
+        if (error) begin
+            $display("ERROR");
+            $finish;
+        end
+        else if (halted) begin
             $display("HALT");
             $finish;
         end
     end
 
-    // Safety timeout -- never let a buggy core spin forever.
+    // Safety timeout
     initial begin
-        $display("Timed out!");
         #100000 $finish;
+        $display("Timed out!");
     end
 
 endmodule
