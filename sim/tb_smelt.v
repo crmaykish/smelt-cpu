@@ -43,9 +43,13 @@ module tb_smelt;
         $dumpvars(0, tb_smelt);
     end
 
+    // Current opcode for display output, only valid when the CPU is in the DECODE cycle
+    wire [4:0] opcode = (cpu.state == cpu.DECODE) ? cpu.rdata[15:11] : 5'bx;
+
     // Print a per-cycle state of the CPU internals
     always @(posedge clk) begin
-        $display("T=%0t RST=%0d PC=%h IR=%h STATE=%0d", $time, cpu.rst, cpu.pc, cpu.ir, cpu.state);
+        $display("T=%0t RST=%0d PC=%h OP=%h IR=%h rd=%0d STATE=%0d | R0=%h, R1=%h", 
+            $time, cpu.rst, cpu.pc, opcode, cpu.ir, cpu.ir[10:8], cpu.state, cpu.regs[0], cpu.regs[1]);
     end
 
     // Clean stop when the CPU halts
