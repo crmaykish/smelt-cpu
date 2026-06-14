@@ -5,9 +5,9 @@ module smelt_cpu (
     input clk,                  // CPU clock
     input rst,                  // Reset line
     input [15:0] rdata,         // Data read from memory
-    output reg [15:0] addr,     // External address bus
-    output reg [15:0] wdata,    // Data to write
-    output reg we,              // Write-enable
+    output reg [15:0] addr  = 16'b0,   // External address bus
+    output reg [15:0] wdata = 16'b0,   // Data to write
+    output reg        we    = 1'b0,    // Write-enable
     output reg halted,          // CPU is halted
     output reg error            // CPU encountered an error
 );
@@ -43,11 +43,28 @@ module smelt_cpu (
         .carry(alu_carry)
     );
 
+    // Combinational address bus: each access's address is driven one cycle BEFORE
+    // its data is consumed, matching the synchronous memory's 1-cycle read latency.
+    always @(*) begin
+        addr = pc;
+        wdata = 16'b0;
+        we = 1'b0;
+
+        if (state == DECODE) begin
+            case (rdata[15:11])
+                LD: addr = regs[rdata[7:5]];
+                LDI: addr = pc + 1'b1;
+                ST: begin
+                    addr = regs[rdata[10:8]];
+                    wdata = regs[rdata[7:5]];
+                    we = 1'b1;
+                end
+            endcase
+        end
+    end
+
     always @(posedge clk or posedge rst) begin
         if (rst) begin
-            addr        <= 16'h0000;
-            wdata       <= 16'h0000;
-            we          <= 1'b0;
             halted      <= 1'b0;
             error       <= 1'b0;
             pc          <= 16'b0;
@@ -59,9 +76,6 @@ module smelt_cpu (
             // Main fetch-decode-execute loop
             case (state)
                 FETCH: begin
-                    // TODO: could this address read be combinational?
-                    addr <= pc;
-                    we <= 1'b0;
                     state <= DECODE;
                 end
                 DECODE: begin
@@ -73,21 +87,11 @@ module smelt_cpu (
                     // Opcode decoding (decode on rdata since ir is still a cycle behind)
                     case (rdata[15:11])
                         HALT: halted <= 1'b1;
-                        LD: begin
-                            // mem[rs] means rdata is the memory value next cycle
-                            addr <= regs[rdata[7:5]];
+                        LD, LDI: begin
                             state <= MEM;
                         end
                         ST: begin
-                            addr <= regs[rdata[10:8]];
-                            wdata <= regs[rdata[7:5]];
-                            we <= 1'b1;
                             state <= FETCH;
-                        end
-                        LDI: begin
-                            // Set address to the next word after the current PC for the rdata read in the MEM state
-                            addr <= pc + 1'b1;
-                            state <= MEM;
                         end
                         JMP: begin
                             // Sign extend the offset to 16 bits

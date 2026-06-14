@@ -11,7 +11,7 @@ module smelt_alu (
 
 `include "opcodes.vh"
 
-reg [16:0] buffer;      // combinational; defaulted in the always block below
+reg [16:0] buffer;
 
 assign result = buffer[15:0];
 assign zero = (result == 16'b0);

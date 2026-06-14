@@ -7,7 +7,7 @@ module memory
     input  wire [15:0] addr,
     input  wire [15:0] wdata,
     input  wire        we,
-    output wire [15:0] rdata
+    output reg [15:0] rdata
 );
 
     localparam DEPTH = 1024;            // number of words (2KB total)
@@ -27,14 +27,12 @@ module memory
         $readmemh(hexfile, mem);
     end
 
-    // Drive read-data from the current CPU address
-    assign rdata = mem[addr];
-
     always @(posedge clk) begin
         if (we) begin
             if (addr == OUT_PORT) $display("OUT: %h", wdata);
             else mem[addr] <= wdata;
         end
+        rdata <= mem[addr];
     end
 
 endmodule
