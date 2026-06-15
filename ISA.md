@@ -80,6 +80,4 @@ Branches (and `JSR`) are PC-relative. The reference point is the already-increme
 
 ## 5. Program Format
 
-Manually-assembled programs are stored as `.hex` files: one 16-bit value per line in hexadecimal, in ascending address order starting at `0x0000`. The testbench loads them into memory with Verilog's `$readmemh` command.
-
-Assembly source code support (`.s` files) and a simple cross-assembler to follow.
+Programs are written in assembly (`.s`) and assembled to `.hex` by `smeltasm`, see [`ASM.md`](ASM.md). A `.hex` file is one 16-bit value per line in hexadecimal, in ascending address order starting at `0x0000`; the testbench loads it into memory with Verilog's `$readmemh` command.

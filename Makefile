@@ -17,7 +17,7 @@ VCD = sim/smelt.vcd
 
 # Per-run program selection -- override on the command line, e.g.
 #   make sim HEX=asm/branch_test.hex GOLDEN=asm/branch_test.golden
-# Left empty, the testbench/memory fall back to their built-in defaults.
+# HEX is required (memory.v errors out if it isn't given); GOLDEN is optional.
 HEX ?=
 GOLDEN ?=
 EXPECT_ERROR ?=
