@@ -18,3 +18,5 @@ localparam BEQ  = 16'h0F;
 localparam BNE  = 16'h10;
 localparam JSR  = 16'h11;
 localparam RTS  = 16'h12;
+localparam INC = 16'h13;
+localparam DEC = 16'h14;

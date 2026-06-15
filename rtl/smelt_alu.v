@@ -41,6 +41,12 @@ always @(*) begin
         SHR: begin
             buffer = {a[0], a >> 1};
         end
+        INC: begin
+            buffer = a + 1'b1;
+        end
+        DEC: begin
+            buffer = {(a >= 1'b1), a - 1'b1};
+        end
     endcase
 end
 

@@ -124,7 +124,7 @@ module smelt_cpu (
                         // Register copy
                         MOV: regs[ir[10:8]] <= regs[ir[7:5]];
                         // ALU: result + Z + C
-                        ADD, SUB, SHL, SHR: begin
+                        ADD, SUB, SHL, SHR, INC, DEC: begin
                             regs[ir[10:8]] <= alu_result;
                             flag_zero <= alu_zero;
                             flag_carry <= alu_carry;
