@@ -67,6 +67,8 @@ Smelt uses the no-borrow carry flag convention: `C=1` after `SUB` means no-borro
 | `0x10` | `BNE rel`       |  B   | if `Z=0`: `PC ← PC + offset`      |       |
 | `0x11` | `JSR rel`       |  B   | `R7 ← PC; PC ← PC + offset` (call) |      |
 | `0x12` | `RTS`           |      | `PC ← R7` (return)                |       |
+| `0x13` | `INC rd`        |  R   | `rd ← rd + 1`                     | Z, C  |
+| `0x14` | `DEC rd`        |  R   | `rd ← rd - 1`                     | Z, C  |
 
 ## 4. Branch & Subroutine Semantics
 

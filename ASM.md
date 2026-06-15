@@ -110,15 +110,16 @@ register:
         cmp  r0, r1         ; flags only; r0 unchanged
 ```
 
-### `op  rd` - shifts (single register)
+### `op  rd` - single-register ops
 
-`shl` and `shr` take **one** register and shift it by **one** bit (`rd ← rd <<
-1` / `rd >> 1`). There is no variable shift amount - the second register field
-is unused.
+`shl`/`shr` (shift by one) and `inc`/`dec` (`±1`) take **one** register. Shifts
+have no variable amount; `inc`/`dec` set `Z`/`C` like `add`/`sub`.
 
 ```asm
         shl  r0             ; r0 = r0 << 1   (LSB <- 0)
         shr  r0             ; r0 = r0 >> 1   (MSB <- 0, logical)
+        inc  r0             ; r0 = r0 + 1
+        dec  r0             ; r0 = r0 - 1    (sets Z -> handy for `dec; bne` loops)
 ```
 
 ### `ldi  rd, #imm` - load immediate
@@ -225,7 +226,7 @@ loop:   st   [r6], r0           ; submit current value
 | `label:`            | `loop:`            | branch target (case-sensitive)|
 | `op`                | `nop`, `halt`      | no operands                   |
 | `op rd, rs`         | `add r0, r1`       | register/register             |
-| `op rd`             | `shl r0`, `shr r0` | single register (shift by one)|
+| `op rd`             | `shl/shr/inc/dec r0` | single register (shift, +1, -1)|
 | `ldi rd, #imm`      | `ldi r0, #0x1234`  | two words                     |
 | `ld rd, [rs]`       | `ld r0, [r1]`      | load                          |
 | `st [rd], rs`       | `st [r6], r0`      | store (`0xFFFF` = output port)|
